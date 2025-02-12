@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
 
-class PostEditController extends Controller
+class PostEditController extends PostBaseController
 {
     public function __invoke(Post $post)
     {

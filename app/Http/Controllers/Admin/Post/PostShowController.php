@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Post;
 use App\Http\Controllers\Controller;
 use App\Models\Post;
 
-class PostShowController extends Controller
+class PostShowController extends PostBaseController
 {
     public function __invoke(Post $post)
     {

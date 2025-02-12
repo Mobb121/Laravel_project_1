@@ -20,7 +20,6 @@
             </div><!-- /.container-fluid -->
         </div>
         <!-- /.content-header -->
-
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
@@ -33,13 +32,13 @@
                                 <input type="text" class="form-control" name="title" placeholder="Название поста"
                                        value="{{old('title')}}">
                                 @error('title')
-                                <div class="text-danger">Данное поле должно быть заполненно</div>
+                                <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group">
                                 <textarea id="summernote" name="content">{{old('content')}}</textarea>
                                 @error('content')
-                                <div class="text-danger">Данное поле должно быть заполненно</div>
+                                <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group">
@@ -49,19 +48,23 @@
                                         <option value="{{ $category->id }}"
                                             {{$category->id == old('category_id') ? 'selected' : ''}}>{{ $category->title }}</option>
                                     @endforeach
-                                    @error('category_id')
-                                    <div class="text-danger">Данное поле должно быть заполненно</div>
-                                    @enderror
                                 </select>
+                                @error('category_id')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label>Тэги</label>
                                 <select class="select2" multiple="multiple" data-placeholder="Выберите тэги"
                                         style="width: 100%;" name="tag_ids[]">
                                     @foreach($tags as $tag)
-                                        <option {{ is_array(old('tag_ids')) && in_array($tag->id, old('tag_ids')) ? ' selected' : '' }} value="{{$tag->id}}">{{$tag->title}} </option>
+                                        <option
+                                            {{ is_array(old('tag_ids')) && in_array($tag->id, old('tag_ids')) ? ' selected' : '' }} value="{{$tag->id}}">{{$tag->title}} </option>
                                     @endforeach
                                 </select>
+                                @error('tag_ids')
+                                <div class="text-danger">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputFile">Добавить превью</label>
@@ -75,7 +78,7 @@
                                     </div>
                                 </div>
                                 @error('main_image')
-                                <div class="text-danger">Данное поле должно быть заполненно</div>
+                                <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group">
@@ -90,7 +93,7 @@
                                     </div>
                                 </div>
                                 @error('main_image')
-                                <div class="text-danger">Данное поле должно быть заполненно</div>
+                                <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-group">

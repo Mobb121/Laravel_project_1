@@ -7,7 +7,7 @@ use App\Http\Requests\Admin\Post\StoreRequest;
 use App\Http\Requests\Admin\Post\UpdateRequest;
 use App\Models\Post;
 
-class PostDestroyController extends Controller
+class PostDestroyController extends PostBaseController
 {
     public function __invoke(Post $post)
     {

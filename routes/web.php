@@ -22,6 +22,13 @@ use App\Http\Controllers\Admin\Tag\TagIndexController;
 use App\Http\Controllers\Admin\Tag\TagShowController;
 use App\Http\Controllers\Admin\Tag\TagStoreController;
 use App\Http\Controllers\Admin\Tag\TagUpdateController;
+use App\Http\Controllers\Admin\User\UserCreateController;
+use App\Http\Controllers\Admin\User\UserDestroyController;
+use App\Http\Controllers\Admin\User\UserEditController;
+use App\Http\Controllers\Admin\User\UserIndexController;
+use App\Http\Controllers\Admin\User\UserShowController;
+use App\Http\Controllers\Admin\User\UserStoreController;
+use App\Http\Controllers\Admin\User\UserUpdateController;
 use App\Http\Controllers\Main\IndexController;
 use Illuminate\Support\Facades\Route;
 
@@ -60,4 +67,14 @@ Route::namespace('app/Http/Controllers/Admin')->prefix('admin')->group(function 
         Route::patch('/{post}', [PostUpdateController::class, '__invoke'])->name('admin.post.update');
         Route::delete('/{post}', [PostDestroyController::class, '__invoke'])->name('admin.post.delete');
     });
+});
+
+Route::namespace('User')->prefix('users')->group(function () {
+    Route::get('/', [UserIndexController::class, '__invoke'])->name('admin.user.index');
+    Route::get('/create', [UserCreateController::class, '__invoke'])->name('admin.user.create');
+    Route::post('/store', [UserStoreController::class, '__invoke'])->name('admin.user.store');
+    Route::get('/{user}', [UserShowController::class, '__invoke'])->name('admin.user.show');
+    Route::get('/{user}/edit', [UserEditController::class, '__invoke'])->name('admin.user.edit');
+    Route::patch('/{user}', [UserUpdateController::class, '__invoke'])->name('admin.user.update');
+    Route::delete('/{user}', [UserDestroyController::class, '__invoke'])->name('admin.user.delete');
 });

@@ -36,9 +36,9 @@ class UpdateRequest extends FormRequest
     {
         return [
             'title.required' => 'это поле необходимо для заполнения',
-            'title.string' => 'Данные должны соответствовать строчному типу',
+            'title.string' => 'данные должны соответствовать строчному типу',
             'content.required' => 'это поле необходимо для заполнения',
-            'content.string' => 'Данные должны соответствовать строчному типу',
+            'content.string' => 'данные должны соответствовать строчному типу',
             'preview_image.required' => 'это поле необходимо для заполнения',
             'preview_image.file' => 'необходимо выбрать файл',
             'main_image.required' => 'это поле необходимо для заполнения',

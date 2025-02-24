@@ -32,6 +32,8 @@ use App\Http\Controllers\Admin\User\UserUpdateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Main\IndexController;
 use App\Http\Controllers\Auth;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Auth\LoginController;
@@ -44,9 +46,9 @@ Route::namespace('Main')->group(function () {
     Route::get('/', [IndexController::class, '__invoke']);
 });
 
-Route::namespace('app/Http/Controllers/Admin')->prefix('admin')->middleware(['auth','admin'])->group(function () {
+Route::namespace('app/Http/Controllers/Admin')->prefix('admin')->middleware(['auth','verified','admin'])->group(function () {
 
-        Route::get('/', [AdminIndexController::class, '__invoke']);
+        Route::get('/', [AdminIndexController::class, '__invoke'])->name('admin.main.index');
 
         Route::namespace('Category')->prefix('categories')->group(function () {
             Route::get('/', [CategoryIndexController::class, '__invoke'])->name('admin.category.index');
@@ -89,7 +91,6 @@ Route::namespace('app/Http/Controllers/Admin')->prefix('admin')->middleware(['au
         });
     });
 
-
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -102,3 +103,16 @@ Route::post('/password/email', [ForgotPasswordController::class, 'sendResetLinkE
 Route::get('/password/reset/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
 
+Route::get('/verify', function () {
+    return view('auth.verify');
+})->middleware('auth')->name('verification.notice');
+
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+    $request->fulfill();
+    return redirect('/');
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+Route::post('/email/verification-notification', function (Request $request) {
+    $request->user()->sendEmailVerificationNotification();
+    return back()->with('message', 'Verification link sent!');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.resend');

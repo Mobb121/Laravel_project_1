@@ -12,8 +12,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
-                            <li class="breadcrumb-item active">Dashboard v1</li>
+                            <li class="breadcrumb-item"><a href="{{route('admin.main.index')}}">Главная</a></li>
                         </ol>
                     </div><!-- /.col -->
                 </div><!-- /.row -->
@@ -38,12 +37,6 @@
                         <div class="form-group">
                             <input type="text" class="form-control" name="email" placeholder="Электронная почта пользователя">
                             @error('email')
-                            <div class="text-danger">Данное поле должно быть заполненно</div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" name="password" placeholder="Пароль">
-                            @error('password')
                             <div class="text-danger">Данное поле должно быть заполненно</div>
                             @enderror
                         </div>

@@ -11,13 +11,9 @@ use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
+
     public function __invoke()
     {
-        $data = [];
-        $data['usersCount'] = User::all()->count();
-        $data['categoryCount'] = Category::all()->count();
-        $data['tagCount'] = Tag::all()->count();
-        $data['postCount'] = Post::all()->count();
-        return view('main.index1');
+        return redirect()->route('post.index');
     }
 }

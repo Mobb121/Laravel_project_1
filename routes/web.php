@@ -1,13 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminIndexController;
-use App\Http\Controllers\Admin\Category\CategoryCreateController;
-use App\Http\Controllers\Admin\Category\CategoryDestroyController;
-use App\Http\Controllers\Admin\Category\CategoryEditController;
-use App\Http\Controllers\Admin\Category\CategoryIndexController;
-use App\Http\Controllers\Admin\Category\CategoryShowController;
-use App\Http\Controllers\Admin\Category\CategoryStoreController;
-use App\Http\Controllers\Admin\Category\CategoryUpdateController;
+use App\Http\Controllers\Admin\Category;
+
 use App\Http\Controllers\Admin\Post\PostCreateController;
 use App\Http\Controllers\Admin\Post\PostDestroyController;
 use App\Http\Controllers\Admin\Post\PostEditController;
@@ -29,13 +24,21 @@ use App\Http\Controllers\Admin\User\UserIndexController;
 use App\Http\Controllers\Admin\User\UserShowController;
 use App\Http\Controllers\Admin\User\UserStoreController;
 use App\Http\Controllers\Admin\User\UserUpdateController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Personal\Comment\PersonalCommentController;
+use App\Http\Controllers\Personal\Comment\PersonalCommentDeleteController;
+use App\Http\Controllers\Personal\Comment\PersonalCommentEditController;
+use App\Http\Controllers\Personal\Comment\PersonalCommentUpdateController;
+use App\Http\Controllers\Personal\Liked\PersonalLikedController;
+use App\Http\Controllers\Personal\Liked\PersonalLikedDeleteController;
+use App\Http\Controllers\Personal\Main\PersonalIndexController;
+use App\Http\Controllers\Post\BlogPostIndexController;
 use App\Http\Controllers\Main\IndexController;
-use App\Http\Controllers\Auth;
+use App\Http\Controllers\Post\BlogPostShowController;
+use App\Http\Controllers\Post\Comment\BlogPostCommentStoreController;
+use App\Http\Controllers\Post\Like\BlogPostLikeStoreController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -43,21 +46,52 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 
 
 Route::namespace('Main')->group(function () {
-    Route::get('/', [IndexController::class, '__invoke']);
+    Route::get('/', [IndexController::class, '__invoke'])->name('main.index');
 });
 
-Route::namespace('app/Http/Controllers/Admin')->prefix('admin')->middleware(['auth','verified','admin'])->group(function () {
+Route::namespace('Main')->prefix('post')->group(function () {
+    Route::get('/', [BlogPostIndexController::class, '__invoke'])->name('post.index');
+    Route::get('/{post}', [BlogPostShowController::class, '__invoke'])->name('post.show');
+
+    Route::namespace('app/Http/Controllers/Post/Comment')->prefix('{post}/comments')->group(function () {
+        Route::post('/', [BlogPostCommentStoreController::class, '__invoke'])->name('post.comment.store');
+    });
+
+    Route::namespace('app/Http/Controllers/Post/Like')->prefix('{post}/like')->group(function () {
+        Route::post('/', [BlogPostLikeStoreController::class, '__invoke'])->name('post.like.store');
+    });
+});
+Route::namespace('app/Http/Controllers/Personal')->prefix('personal')
+    ->middleware(['auth', 'verified'])->group(function () {
+
+        Route::get('/', [PersonalIndexController::class, '__invoke'])->name('personal.main.index');
+
+        Route::namespace('Liked')->prefix('liked')->group(function () {
+            Route::get('/', [PersonalLikedController::class, '__invoke'])->name('personal.liked.index');
+            Route::delete('/{post}', [PersonalLikedDeleteController::class, '__invoke'])->name('personal.liked.delete');
+        });
+
+        Route::namespace('comment')->prefix('comment')->group(function () {
+            Route::get('/', [PersonalCommentController::class, '__invoke'])->name('personal.comment.index');
+            Route::get('/{comment}/edit', [PersonalCommentEditController::class, '__invoke'])->name('personal.comment.edit');
+            Route::patch('/{comment}', [PersonalCommentUpdateController::class, '__invoke'])->name('personal.comment.update');
+            Route::delete('/{comment}', [PersonalCommentDeleteController::class, '__invoke'])->name('personal.comment.delete');
+        });
+    });
+
+Route::namespace('app/Http/Controllers/Admin')->prefix('admin')
+    ->middleware(['auth', 'verified', 'admin'])->group(function () {
 
         Route::get('/', [AdminIndexController::class, '__invoke'])->name('admin.main.index');
 
         Route::namespace('Category')->prefix('categories')->group(function () {
-            Route::get('/', [CategoryIndexController::class, '__invoke'])->name('admin.category.index');
-            Route::get('/create', [CategoryCreateController::class, '__invoke'])->name('admin.category.create');
-            Route::post('/store', [CategoryStoreController::class, '__invoke'])->name('admin.category.store');
-            Route::get('/{category}', [CategoryShowController::class, '__invoke'])->name('admin.category.show');
-            Route::get('/{category}/edit', [CategoryEditController::class, '__invoke'])->name('admin.category.edit');
-            Route::patch('/{category}', [CategoryUpdateController::class, '__invoke'])->name('admin.category.update');
-            Route::delete('/{category}', [CategoryDestroyController::class, '__invoke'])->name('admin.category.delete');
+            Route::get('/', [Category\CategoryIndexController::class, '__invoke'])->name('admin.category.index');
+            Route::get('/create', [Category\CategoryCreateController::class, '__invoke'])->name('admin.category.create');
+            Route::post('/store', [Category\CategoryStoreController::class, '__invoke'])->name('admin.category.store');
+            Route::get('/{category}', [Category\CategoryShowController::class, '__invoke'])->name('admin.category.show');
+            Route::get('/{category}/edit', [Category\CategoryEditController::class, '__invoke'])->name('admin.category.edit');
+            Route::patch('/{category}', [Category\CategoryUpdateController::class, '__invoke'])->name('admin.category.update');
+            Route::delete('/{category}', [Category\CategoryDestroyController::class, '__invoke'])->name('admin.category.delete');
         });
 
         Route::namespace('Tag')->prefix('tag')->group(function () {
